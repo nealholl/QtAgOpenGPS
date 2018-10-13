@@ -43,7 +43,7 @@ void CCamera::setWorldCam(QOpenGLFunctions_2_1 *gl,
     gl->glRotated(camPitch, 1, 0, 0);
     gl->glRotated(camYaw, 0, 0, 1);
 
-    double fixHeadingRadians = toRadians(fixHeading);
+    double fixHeadingRadians = glm::toRadians(fixHeading);
 
     if (camPitch > -45) {
         offset = (45.0 + camPitch) / 45.0;
@@ -85,7 +85,7 @@ void CCamera::setWorldCam(QMatrix4x4 &modelview,
     modelview.rotate(camPitch, 1, 0, 0);
     modelview.rotate(camYaw, 0,0,1);
 
-    double fixHeadingRadians = toRadians(fixHeading);
+    double fixHeadingRadians = glm::toRadians(fixHeading);
 
     if (camPitch > -45) {
         offset = (45.0 + camPitch) / 45.0;

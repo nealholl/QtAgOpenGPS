@@ -270,7 +270,7 @@ void FormGPS::calculatePositionHeading()
 {
     //in radians
     vehicle->fixHeading = atan2(pn->easting - stepFixPts[currentStepFix].easting, pn->northing - stepFixPts[currentStepFix].northing);
-    if (vehicle->fixHeading < 0) vehicle->fixHeading += twoPI;
+    if (vehicle->fixHeading < 0) vehicle->fixHeading += glm::twoPI;
 
     //qDebug() << qSetRealNumberPrecision(15) << currentStepFix << pn->easting << stepFixPts[currentStepFix].easting << pn->northing << stepFixPts[currentStepFix].northing << fixHeading;
 
@@ -290,8 +290,8 @@ void FormGPS::calculatePositionHeading()
 
 
     fixHeadingCam = atan2(pn->easting - stepFixPts[camStep].easting, pn->northing - stepFixPts[camStep].northing);
-    if (fixHeadingCam < 0) fixHeadingCam += twoPI;
-    fixHeadingCam = toDegrees(fixHeadingCam);
+    if (fixHeadingCam < 0) fixHeadingCam += glm::twoPI;
+    fixHeadingCam = glm::toDegrees(fixHeadingCam);
 
     //testDouble = fixHeadingCam;
     //testInt = camStep;
@@ -592,10 +592,10 @@ void FormGPS::calculateSectionLookAhead(double northing, double easting, double 
 
         //Is section outer going forward or backward
         double head = left.headingXZ();
-        if (M_PI - fabs(fabs(head - vehicle->fixHeadingSection) - M_PI) > PIBy2) leftLook *= -1;
+        if (M_PI - fabs(fabs(head - vehicle->fixHeadingSection) - M_PI) > glm::PIBy2) leftLook *= -1;
 
         head = right.headingXZ();
-        if (M_PI - fabs(fabs(head - vehicle->fixHeadingSection) - M_PI) > PIBy2) rightLook *= -1;
+        if (M_PI - fabs(fabs(head - vehicle->fixHeadingSection) - M_PI) > glm::PIBy2) rightLook *= -1;
 
         //choose fastest speed
         if (fabs(leftLook) > 0.000001 and fabs(rightLook) > 0.000001) {
@@ -706,7 +706,7 @@ void FormGPS::initializeFirstFewGPSPositions()
 
         //in radians
         vehicle->fixHeading = atan2(pn->easting - stepFixPts[totalFixSteps - 1].easting, pn->northing - stepFixPts[totalFixSteps - 1].northing);
-        if (vehicle->fixHeading < 0) vehicle->fixHeading += twoPI;
+        if (vehicle->fixHeading < 0) vehicle->fixHeading += glm::twoPI;
         vehicle->fixHeadingSection = vehicle->fixHeading;
 
         //send out initial zero settings

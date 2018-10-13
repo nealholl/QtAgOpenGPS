@@ -45,7 +45,7 @@ void CABLine::setABLineByPoint()
 
     //calculate the AB Heading
     abHeading = atan2(refPoint2.easting - refPoint1.easting, refPoint2.northing - refPoint1.northing);
-    if (abHeading < 0) abHeading += twoPI;
+    if (abHeading < 0) abHeading += glm::twoPI;
 
     //sin x cos z for endpoints, opposite for additional lines
     refABLineP1.easting = refPoint1.easting - (sin(abHeading) * 4000.0);
@@ -76,8 +76,8 @@ void CABLine::snapABLine()
 {
     double headingCalc;
     //calculate the heading 90 degrees to ref ABLine heading
-    if (isOnRightSideCurrentLine) headingCalc = abHeading + PIBy2;
-    else headingCalc = abHeading - PIBy2;
+    if (isOnRightSideCurrentLine) headingCalc = abHeading + glm::PIBy2;
+    else headingCalc = abHeading - glm::PIBy2;
 
     //calculate the new points for the reference line and points
     refPoint1.easting = (sin(headingCalc) * fabs(distanceFromCurrentLine) * 0.001) + refPoint1.easting;
@@ -174,7 +174,7 @@ void CABLine::getCurrentABLine() {
 
     //Subtract the two headings, if > 1.57 its going the opposite heading as refAB
     abFixHeadingDelta = (fabs(vehicle->fixHeading - abHeading));
-    if (abFixHeadingDelta >= M_PI) abFixHeadingDelta = fabs(abFixHeadingDelta - twoPI);
+    if (abFixHeadingDelta >= M_PI) abFixHeadingDelta = fabs(abFixHeadingDelta - glm::twoPI);
 
     // ** Pure pursuit ** - calc point on ABLine closest to current position
     //if (currentABLineP1.easting == currentABLineP2.easting && currentABLineP1.northing == currentABLineP2.northing) currentABLineP1.easting -= 0.00001;
@@ -192,7 +192,7 @@ void CABLine::getCurrentABLine() {
     double goalPointDistance = (vehicle->speed * vehicle->goalPointLookAhead * 0.2777777777);
     if (goalPointDistance < minLookAheadDistance) goalPointDistance = minLookAheadDistance;
 
-    if (abFixHeadingDelta >= PIBy2)
+    if (abFixHeadingDelta >= glm::PIBy2)
     {
         isABSameAsFixHeading = false;
         goalPointAB.easting = rEastAB - (sin(abHeading) * goalPointDistance);
@@ -209,10 +209,10 @@ void CABLine::getCurrentABLine() {
     double goalPointDistanceDSquared = CNMEA::distanceSquared(goalPointAB.northing, goalPointAB.easting, pivotAxlePosAB.northing, pivotAxlePosAB.easting);
 
     //calculate the the new x in local coordinates and steering angle degrees based on wheelbase
-    double localHeading = twoPI - vehicle->fixHeading;
+    double localHeading = glm::twoPI - vehicle->fixHeading;
     ppRadiusAB = goalPointDistanceDSquared / (2 * (((goalPointAB.easting - pivotAxlePosAB.easting) * cos(localHeading)) + ((goalPointAB.northing - pivotAxlePosAB.northing) * sin(localHeading))));
 
-    steerAngleAB = toDegrees(atan( 2 * (((goalPointAB.easting - pivotAxlePosAB.easting) * cos(localHeading))
+    steerAngleAB = glm::toDegrees(atan( 2 * (((goalPointAB.easting - pivotAxlePosAB.easting) * cos(localHeading))
                                         + ((goalPointAB.northing - pivotAxlePosAB.northing) * sin(localHeading)))
                                    * vehicle->wheelbase / goalPointDistanceDSquared)) ;
     if (steerAngleAB < -vehicle->maxSteerAngle) steerAngleAB = -vehicle->maxSteerAngle;
@@ -231,13 +231,13 @@ void CABLine::getCurrentABLine() {
     //distanceFromCurrentLine = Math.Round(distanceFromCurrentLine * 1000.0, MidpointRounding.AwayFromZero);
 
     //angular velocity in rads/sec  = 2PI * m/sec * radians/meters
-    angVel = twoPI * 0.277777 * vehicle->speed * (tan(toRadians(steerAngleAB)))/vehicle->wheelbase;
+    angVel = glm::twoPI * 0.277777 * vehicle->speed * (tan(glm::toRadians(steerAngleAB)))/vehicle->wheelbase;
 
     //clamp the steering angle to not exceed safe angular velocity
     if (fabs(angVel) > vehicle->maxAngularVelocity)
     {
-        steerAngleAB = toDegrees(steerAngleAB > 0 ? (atan((vehicle->wheelbase * vehicle->maxAngularVelocity) / (twoPI * vehicle->speed * 0.277777)))
-            : (atan((vehicle->wheelbase * -vehicle->maxAngularVelocity) / (twoPI * vehicle->speed * 0.277777))));
+        steerAngleAB = glm::toDegrees(steerAngleAB > 0 ? (atan((vehicle->wheelbase * vehicle->maxAngularVelocity) / (glm::twoPI * vehicle->speed * 0.277777)))
+            : (atan((vehicle->wheelbase * -vehicle->maxAngularVelocity) / (glm::twoPI * vehicle->speed * 0.277777))));
     }
 
     //distance is negative if on left, positive if on right
@@ -366,9 +366,9 @@ void CABLine::drawABLines(QOpenGLFunctions *gl, const QMatrix4x4 &mvp) {
         //calculate if tram line is here
         if (tramPassEvery != 0)
         {
-            int pass = (int)passNumber + (tramPassEvery*300) - passBasedOn;
-            if (pass % tramPassEvery != 0) color = QColor::fromRgbF(0.9f, 0.0f, 0.0f, 1.0f);
-            else color = QColor::fromRgbF(0, 0.9, 0, 1.0f);
+            int pass = int(passNumber) + (tramPassEvery*300) - passBasedOn;
+            if (pass % tramPassEvery != 0) gl->glColor3f(0.9f, 0.0f, 0.0f);
+            else gl->glColor3f(0, 0.9, 0);
         }
 
         //based on line pass, make ref purple

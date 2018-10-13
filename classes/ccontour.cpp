@@ -88,11 +88,11 @@ void CContour::buildContourGuidanceLine(double eastFix, double northFix)
     //double startX = eastFix + sin(mf->fixHeading)* 0;
     //double startY = northFix + cos(mf->fixHeading) * 0;
 
-    boxA.easting = eastFix - (sin(vehicle->fixHeading + PIBy2) *  2.0 * vehicle->toolWidth);
-    boxA.northing = northFix - (cos(vehicle->fixHeading + PIBy2) * 2.0 * vehicle->toolWidth);
+    boxA.easting = eastFix - (sin(vehicle->fixHeading + glm::PIBy2) *  2.0 * vehicle->toolWidth);
+    boxA.northing = northFix - (cos(vehicle->fixHeading + glm::PIBy2) * 2.0 * vehicle->toolWidth);
 
-    boxB.easting = eastFix + (sin(vehicle->fixHeading + PIBy2) *  2.0 * vehicle->toolWidth);
-    boxB.northing = northFix + (cos(vehicle->fixHeading + PIBy2) * 2.0 * vehicle->toolWidth);
+    boxB.easting = eastFix + (sin(vehicle->fixHeading + glm::PIBy2) *  2.0 * vehicle->toolWidth);
+    boxB.northing = northFix + (cos(vehicle->fixHeading + glm::PIBy2) * 2.0 * vehicle->toolWidth);
 
     boxC.easting = boxB.easting + (sin(vehicle->fixHeading) * 13.0);
     boxC.northing = boxB.northing + (cos(vehicle->fixHeading) * 13.0);
@@ -196,8 +196,8 @@ void CContour::buildContourGuidanceLine(double eastFix, double northFix)
     double piSide;
 
     //sign of distance determines which side of line we are on
-    if (distanceFromRefLine > 0) piSide = PIBy2;
-    else piSide = -PIBy2;
+    if (distanceFromRefLine > 0) piSide = glm::PIBy2;
+    else piSide = -glm::PIBy2;
 
     //offset calcs
     double toolOffset = vehicle->toolOffset;
@@ -287,7 +287,7 @@ void CContour::distanceFromContourLine()
         //z2-z1
         double dz = ctList[B].z() - ctList[A].z();
 
-        if (fabs(dx) < DOUBLE_EPSILON && fabs(dz) < DOUBLE_EPSILON) return;
+        if (fabs(dx) < glm::DOUBLE_EPSILON && fabs(dz) < glm::DOUBLE_EPSILON) return;
 
         //abHeading = atan2(dz, dx);
         abHeading = ctList[A].y();
@@ -313,7 +313,7 @@ void CContour::distanceFromContourLine()
 
         //Subtract the two headings, if > 1.57 its going the opposite heading as refAB
         abFixHeadingDelta = (fabs(vehicle->fixHeading - abHeading));
-        if (abFixHeadingDelta >= M_PI) abFixHeadingDelta = fabs(abFixHeadingDelta - twoPI);
+        if (abFixHeadingDelta >= M_PI) abFixHeadingDelta = fabs(abFixHeadingDelta - glm::twoPI);
 
         //used for accumulating distance to find goal point
         double distSoFar;
@@ -327,7 +327,7 @@ void CContour::distanceFromContourLine()
         // used for calculating the length squared of next segment.
         double tempDist = 0.0;
 
-        if (abFixHeadingDelta >= PIBy2)
+        if (abFixHeadingDelta >= glm::PIBy2)
         {
             //counting down
             isABSameAsFixHeading = false;
@@ -415,10 +415,10 @@ void CContour::distanceFromContourLine()
         double goalPointDistanceSquared = CNMEA::distanceSquared(goalPointCT.northing, goalPointCT.easting, pivotAxlePosCT.northing, pivotAxlePosCT.easting);
 
         //calculate the the delta x in local coordinates and steering angle degrees based on wheelbase
-        double localHeading = twoPI - vehicle->fixHeading;
+        double localHeading = glm::twoPI - vehicle->fixHeading;
         ppRadiusCT = goalPointDistanceSquared / (2 * (((goalPointCT.easting - pivotAxlePosCT.easting) * cos(localHeading)) + ((goalPointCT.northing - pivotAxlePosCT.northing) * sin(localHeading))));
 
-        steerAngleCT = toDegrees(atan(2 * (((goalPointCT.easting - pivotAxlePosCT.easting) * cos(localHeading))
+        steerAngleCT = glm::toDegrees(atan(2 * (((goalPointCT.easting - pivotAxlePosCT.easting) * cos(localHeading))
             + ((goalPointCT.northing - pivotAxlePosCT.northing) * sin(localHeading))) * vehicle->wheelbase / goalPointDistanceSquared));
 
         if (steerAngleCT < -vehicle->maxSteerAngle) steerAngleCT = -vehicle->maxSteerAngle;
@@ -431,14 +431,14 @@ void CContour::distanceFromContourLine()
         radiusPointCT.northing = pivotAxlePosCT.northing + (ppRadiusCT * sin(localHeading));
 
         //angular velocity in rads/sec  = 2PI * m/sec * radians/meters
-        double angVel = twoPI * 0.277777 * vehicle->speed * (tan(toRadians(steerAngleCT))) / vehicle->wheelbase;
+        double angVel = glm::twoPI * 0.277777 * vehicle->speed * (tan(glm::toRadians(steerAngleCT))) / vehicle->wheelbase;
 
         //clamp the steering angle to not exceed safe angular velocity
         if (fabs(angVel) > vehicle->maxAngularVelocity)
         {
-            steerAngleCT = toDegrees(steerAngleCT > 0 ?
-                    (atan((vehicle->wheelbase * vehicle->maxAngularVelocity) / (twoPI * vehicle->speed * 0.277777)))
-                : (atan((vehicle->wheelbase * -vehicle->maxAngularVelocity) / (twoPI * vehicle->speed * 0.277777))));
+            steerAngleCT = glm::toDegrees(steerAngleCT > 0 ?
+                    (atan((vehicle->wheelbase * vehicle->maxAngularVelocity) / (glm::twoPI * vehicle->speed * 0.277777)))
+                : (atan((vehicle->wheelbase * -vehicle->maxAngularVelocity) / (glm::twoPI * vehicle->speed * 0.277777))));
         }
         //Convert to centimeters
         distanceFromCurrentLine = distanceFromCurrentLine * 1000.0;
@@ -519,7 +519,7 @@ void CContour::drawContourLine(QOpenGLContext *glContext, const QMatrix4x4 &mode
     {
         const int numSegments = 100;
         {
-            double theta = twoPI / (numSegments);
+            double theta = glm::twoPI / (numSegments);
             double c = cos(theta);//precalculate the sine and cosine
             double s = sin(theta);
 

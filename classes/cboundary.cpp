@@ -15,11 +15,11 @@ CBoundary::CBoundary()
 
 void CBoundary::findClosestBoundaryPoint(CVehicle *vehicle, Vec2 fromPt)
 {
-    boxA.easting = fromPt.easting - (sin(vehicle->fixHeading + PIBy2) *  vehicle->toolWidth * 0.5);
-    boxA.northing = fromPt.northing - (cos(vehicle->fixHeading + PIBy2)  * vehicle->toolWidth * 0.5);
+    boxA.easting = fromPt.easting - (sin(vehicle->fixHeading + glm::PIBy2) *  vehicle->toolWidth * 0.5);
+    boxA.northing = fromPt.northing - (cos(vehicle->fixHeading + glm::PIBy2)  * vehicle->toolWidth * 0.5);
 
-    boxB.easting = fromPt.easting + (sin(vehicle->fixHeading + PIBy2) *  vehicle->toolWidth * 0.5);
-    boxB.northing = fromPt.northing + (cos(vehicle->fixHeading + PIBy2)  * vehicle->toolWidth * 0.5);
+    boxB.easting = fromPt.easting + (sin(vehicle->fixHeading + glm::PIBy2) *  vehicle->toolWidth * 0.5);
+    boxB.northing = fromPt.northing + (cos(vehicle->fixHeading + glm::PIBy2)  * vehicle->toolWidth * 0.5);
 
     boxC.easting = boxB.easting + (sin(vehicle->fixHeading) * 2000.0);
     boxC.northing = boxB.northing + (cos(vehicle->fixHeading) * 2000.0);

@@ -272,10 +272,10 @@ void CYouTurn::distanceFromYouTurnLine(CVehicle *vehicle)
         double goalPointDistanceSquared = CNMEA::distanceSquared(goalPointYT.northing, goalPointYT.easting, pivotAxlePosYT.northing, pivotAxlePosYT.easting);
 
         //calculate the the delta x in local coordinates and steering angle degrees based on wheelbase
-        double localHeading = twoPI - vehicle->fixHeading;
+        double localHeading = glm::twoPI - vehicle->fixHeading;
         ppRadiusYT = goalPointDistanceSquared / (2 * (((goalPointYT.easting - pivotAxlePosYT.easting) * cos(localHeading)) + ((goalPointYT.northing - pivotAxlePosYT.northing) * sin(localHeading))));
 
-        steerAngleYT = toDegrees(atan(2 * (((goalPointYT.easting - pivotAxlePosYT.easting) * cos(localHeading))
+        steerAngleYT = glm::toDegrees(atan(2 * (((goalPointYT.easting - pivotAxlePosYT.easting) * cos(localHeading))
             + ((goalPointYT.northing - pivotAxlePosYT.northing) * sin(localHeading))) * vehicle->wheelbase / goalPointDistanceSquared));
 
         if (steerAngleYT < -vehicle->maxSteerAngle) steerAngleYT = -vehicle->maxSteerAngle;
@@ -288,17 +288,17 @@ void CYouTurn::distanceFromYouTurnLine(CVehicle *vehicle)
         radiusPointYT.northing = pivotAxlePosYT.northing + (ppRadiusYT * sin(localHeading));
 
         //angular velocity in rads/sec  = 2PI * m/sec * radians/meters
-        double angVel = twoPI * 0.277777 * vehicle->speed * (tan(toRadians(steerAngleYT))) / vehicle->wheelbase;
+        double angVel = glm::twoPI * 0.277777 * vehicle->speed * (tan(glm::toRadians(steerAngleYT))) / vehicle->wheelbase;
 
         //clamp the steering angle to not exceed safe angular velocity
         if (fabs(angVel) > vehicle->maxAngularVelocity)
         {
-            steerAngleYT = toDegrees(steerAngleYT > 0 ?
-                    (atan((vehicle->wheelbase * vehicle->maxAngularVelocity) / (twoPI * vehicle->speed * 0.277777)))
-                : (atan((vehicle->wheelbase * -vehicle->maxAngularVelocity) / (twoPI * vehicle->speed * 0.277777))));
+            steerAngleYT = glm::toDegrees(steerAngleYT > 0 ?
+                    (atan((vehicle->wheelbase * vehicle->maxAngularVelocity) / (glm::twoPI * vehicle->speed * 0.277777)))
+                : (atan((vehicle->wheelbase * -vehicle->maxAngularVelocity) / (glm::twoPI * vehicle->speed * 0.277777))));
         }
         //Convert to centimeters
-        distanceFromCurrentLine = roundAwayFromZero(distanceFromCurrentLine * 1000.0);
+        distanceFromCurrentLine = glm::roundAwayFromZero(distanceFromCurrentLine * 1000.0);
 
         //distance is negative if on left, positive if on right
         //if you're going the opposite direction left is right and right is left
@@ -313,8 +313,8 @@ void CYouTurn::distanceFromYouTurnLine(CVehicle *vehicle)
             if (isOnRightSideCurrentLine) distanceFromCurrentLine *= -1.0;
         }
 
-        vehicle->guidanceLineDistanceOff = (short)distanceFromCurrentLine;
-        vehicle->guidanceLineSteerAngle = (short)(steerAngleYT * 10);
+        vehicle->guidanceLineDistanceOff = short(distanceFromCurrentLine);
+        vehicle->guidanceLineSteerAngle = short(steerAngleYT * 10);
     }
     else
     {

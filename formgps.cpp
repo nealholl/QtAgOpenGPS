@@ -590,7 +590,7 @@ void FormGPS::tmrWatchdog_timeout()
             */
             qmlItem(qml_root,"stripBoundaryArea")->setProperty("text",tr("Bounded area:")+ " " +locale.toString(boundary->areaAcre,'f',1) + " " + tr("Ac"));
             qmlItem(qml_root,"stripAreaUser")->setProperty("text", locale.toString(vehicle->totalUserSquareMeters * 0.00024710499815078974633856493327535,'f',1) + " " + tr("Ac"));
-            qmlItem(qml_root,"stripEqWidth")->setProperty("text", locale.toString(vehicle->toolWidth * m2ft,'f',1) + " " + tr("ft"));
+            qmlItem(qml_root,"stripEqWidth")->setProperty("text", locale.toString(vehicle->toolWidth * glm::m2ft,'f',1) + " " + tr("ft"));
             qmlItem(qml_root,"stripDistance")->setProperty("text", locale.toString(userDistance * 3.28084,'f',0)+" "+tr("ft"));
             qmlItem(qml_root,"stripAreaRate")->setProperty("text", locale.toString(vehicle->toolWidth * spd / 10 * 2.47,'f',1) + " " + tr("Ac/hr"));
             tlDisp->lblSpeed->setText(locale.toString(spd * 0.621371,'f',1) + " "+tr("MPH"));
@@ -615,7 +615,7 @@ void FormGPS::tmrWatchdog_timeout()
         */
 
         qmlItem(qml_root,"stripHz")->setProperty("text",locale.toString(fixUpdateHz) + " " + tr("Hz"));
-        tlDisp->lblHeading->setText("<small>Hdg:</small>"+locale.toString(toDegrees(vehicle->fixHeading),'f',1) + QChar(0x00b0));
+        tlDisp->lblHeading->setText("<small>Hdg:</small>"+locale.toString(glm::toDegrees(vehicle->fixHeading),'f',1) + QChar(0x00b0));
         tlDisp->lblSteerAngle->setText("<small>Steer:</small>" + locale.toString((double)(vehicle->guidanceLineSteerAngle) / 10,'f',1) + QChar(0x00b0));
 
         /*

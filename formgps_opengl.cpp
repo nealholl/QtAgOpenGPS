@@ -548,7 +548,7 @@ void FormGPS::openGLControlBack_Draw()
 
     //rotate camera so heading matched fix heading in the world
     //gl->glRotated(toDegrees(fixHeadingSection), 0, 0, 1);
-    modelview.rotate(toDegrees(vehicle->fixHeadingSection), 0, 0, 1);
+    modelview.rotate(glm::toDegrees(vehicle->fixHeadingSection), 0, 0, 1);
 
     //translate to that spot in the world
     //gl->glTranslated(-toolPos.easting, -toolPos.northing, -fixZ);

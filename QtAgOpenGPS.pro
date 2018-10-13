@@ -71,7 +71,6 @@ HEADERS  += formgps.h \
     classes/cflag.h \
     classes/cperimeter.h \
     classes/ccamera.h \
-    classes/glm.h \
     classes/cworldgrid.h \
     classes/cmodulecomm.h \
     classes/csection.h \
@@ -84,6 +83,7 @@ HEADERS  += formgps.h \
     aogsettings.h \ 
     common.h \
     glutils.h \
+    glm.h\
     toplinedisplay.h \
     aogrenderer.h \
     classes/cyouturn.h \

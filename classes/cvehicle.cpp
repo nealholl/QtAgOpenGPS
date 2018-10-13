@@ -283,7 +283,7 @@ void CVehicle::drawVehicle(QOpenGLContext *glContext, QMatrix4x4 &modelview,
     if (tankTrailingHitchLength < -2.0 && isToolTrailing)
     {
         //gl->glRotated(toDegrees(-mf->fixHeadingTank), 0.0, 0.0, 1.0);
-        mvTool.rotate(toDegrees(-fixHeadingTank), 0.0, 0.0, 1.0);
+        mvTool.rotate(glm::toDegrees(-fixHeadingTank), 0.0, 0.0, 1.0);
 
         //draw the tank hitch
         gl->glLineWidth(2);
@@ -319,13 +319,13 @@ void CVehicle::drawVehicle(QOpenGLContext *glContext, QMatrix4x4 &modelview,
         //gl->glRotated(toDegrees(-mf->fixHeadingSection), 0.0, 0.0, 1.0);
 
         mvTool.translate(0, trailingTank, 0);
-        mvTool.rotate(toDegrees(fixHeadingTank), 0.0, 0.0, 1.0);
-        mvTool.rotate(toDegrees(-fixHeadingSection), 0.0, 0.0, 1.0);
+        mvTool.rotate(glm::toDegrees(fixHeadingTank), 0.0, 0.0, 1.0);
+        mvTool.rotate(glm::toDegrees(-fixHeadingSection), 0.0, 0.0, 1.0);
     }
     //no tow between hitch
     else {
         //gl->glRotated(toDegrees(-mf->fixHeadingSection), 0.0, 0.0, 1.0);
-        mvTool.rotate(toDegrees(-fixHeadingSection), 0.0, 0.0, 1.0);
+        mvTool.rotate(glm::toDegrees(-fixHeadingSection), 0.0, 0.0, 1.0);
     }
 
     //draw the hitch if trailing
@@ -416,7 +416,7 @@ void CVehicle::drawVehicle(QOpenGLContext *glContext, QMatrix4x4 &modelview,
     //gl21->glPopMatrix();
 
     //gl21->glRotated(toDegrees(-mf->fixHeading), 0.0, 0.0, 1.0);
-    modelview.rotate(toDegrees(-fixHeading), 0.0, 0.0, 1.0);
+    modelview.rotate(glm::toDegrees(-fixHeading), 0.0, 0.0, 1.0);
 
     //draw the vehicle Body
     //gl21->glColor3f(0.9, 0.5, 0.30);
@@ -530,8 +530,8 @@ void CVehicle::sectionCalcWidths()
     for (int j = 0; j < MAXSECTIONS; j++)
     {
         section[j].sectionWidth = (section[j].positionRight - section[j].positionLeft);
-        section[j].rpSectionPosition = 200 + (int)(roundAwayFromZero(section[j].positionLeft * 10));
-        section[j].rpSectionWidth = (int)(roundAwayFromZero(section[j].sectionWidth * 10));
+        section[j].rpSectionPosition = 200 + int(glm::roundAwayFromZero(section[j].positionLeft * 10));
+        section[j].rpSectionWidth = int(glm::roundAwayFromZero(section[j].sectionWidth * 10));
     }
 
     //calculate tool width based on extreme right and left values
@@ -547,6 +547,6 @@ void CVehicle::sectionCalcWidths()
     section[numOfSections].positionRight = toolFarRightPosition;
 
     //find the right side pixel position
-    rpXPosition = 200 + (int)(roundAwayFromZero(toolFarLeftPosition * 10));
-    rpWidth = (int)(roundAwayFromZero(toolWidth * 10));
+    rpXPosition = 200 + int(glm::roundAwayFromZero(toolFarLeftPosition * 10));
+    rpWidth = int(glm::roundAwayFromZero(toolWidth * 10));
 }
