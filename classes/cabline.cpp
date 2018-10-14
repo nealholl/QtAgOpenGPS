@@ -367,8 +367,8 @@ void CABLine::drawABLines(QOpenGLFunctions *gl, const QMatrix4x4 &mvp) {
         if (tramPassEvery != 0)
         {
             int pass = int(passNumber) + (tramPassEvery*300) - passBasedOn;
-            if (pass % tramPassEvery != 0) gl->glColor3f(0.9f, 0.0f, 0.0f);
-            else gl->glColor3f(0, 0.9, 0);
+            if (pass % tramPassEvery != 0) color = QColor::fromRgbF(0.9f, 0.0f, 0.0f);
+            else color = QColor::fromRgbF(0, 0.9, 0, 1.0f);
         }
 
         //based on line pass, make ref purple
@@ -453,7 +453,7 @@ void CABLine::drawABLines(QOpenGLFunctions *gl, const QMatrix4x4 &mvp) {
             const int numSegments = 100;
             {
 				color = QColor::fromRgbF(0.95f, 0.30f, 0.950f, 1.0f);
-                double theta = twoPI / numSegments;
+                double theta = glm::twoPI / numSegments;
                 double c = cos(theta);//precalculate the sine and cosine
                 double s = sin(theta);
 
