@@ -10,13 +10,14 @@
 #include "cyouturn.h"
 #include "crate.h"
 #include "aogsettings.h"
-#include <QColor>
-#include <QRgb>
+//#include <QColor>
+//#include <QRgb>
 #include "qmlutil.h"
 #include "glm.h"
 #include "toplinedisplay.h"
-#include <QLocale>
-#include <QLabel>
+//#include <QLocale>
+//#include <QLabel>
+#include <QtWidgets>
 
 FormGPS::FormGPS(QWidget *parent) :
     QMainWindow(parent),
@@ -169,7 +170,7 @@ void FormGPS::processSectionLookahead() {
     //lookaheadPixels was read in the OpenGL rendering routine.
 
     //10 % min is required for overlap, otherwise it never would be on.
-    int pixLimit = (int)((double)(vehicle->rpWidth * rpHeight)/(double)(vehicle->numOfSections*1.5));
+    int pixLimit = int(double(vehicle->rpWidth * rpHeight)/double(vehicle->numOfSections*1.5));
 
     //is applied area coming up?
     int totalPixs = 0;
@@ -255,7 +256,7 @@ void FormGPS::processSectionLookahead() {
 
 
                     tagged = 0;
-                    for (int h = 0; h < (int)vehicle->section[j].sectionLookAhead; h++)
+                    for (int h = 0; h < int(vehicle->section[j].sectionLookAhead); h++)
                     {
                         for (int a = start; a < end; a++)
                         {
@@ -283,7 +284,7 @@ GetMeOutaHere:
                     //skip = vehicle->rpWidth - (end - start);
 
                     //looking for boundary line color, bright green
-                    for (int h = 0; h < (int)vehicle->section[j].sectionLookAhead; h++)
+                    for (int h = 0; h < int(vehicle->section[j].sectionLookAhead); h++)
                     {
                         for (int a = start; a < end; a++)
                         {
@@ -329,7 +330,7 @@ GetMeOutaHere:
 
 
                     int tagged = 0;
-                    for (int h = 0; h < (int)vehicle->section[j].sectionLookAhead; h++)
+                    for (int h = 0; h < int(vehicle->section[j].sectionLookAhead); h++)
                     {
                         for (int a = start; a < end; a++)
                         {
@@ -446,7 +447,7 @@ GetMeOutaHere:
 
     //System.Threading.Thread.Sleep(400);
     //stop the timer and calc how long it took to do calcs and draw
-    frameTime = (double)swFrame.elapsed() / 1000; //QElapsedTimer is in milliseconds
+    frameTime = double(swFrame.elapsed()) / 1000; //QElapsedTimer is in milliseconds
 
     //if a minute has elapsed save the field in case of crash and to be able to resume
     if (saveCounter > 180)       //3 counts per second X 60 seconds = 180 counts per minute.
@@ -476,7 +477,7 @@ void FormGPS::processSectionOnOffRequests()
             //if requested to be on, set the timer to Max 10 (1 seconds) = 10 frames per second
             if (vehicle->section[j].sectionOnRequest && !vehicle->section[j].sectionOnOffCycle)
             {
-                vehicle->section[j].sectionOnTimer = (int)(pn->speed * vehicle->toolLookAhead)+1;
+                vehicle->section[j].sectionOnTimer = int(pn->speed * vehicle->toolLookAhead)+1;
                 if (vehicle->section[j].sectionOnTimer > fixUpdateHz+3) vehicle->section[j].sectionOnTimer = fixUpdateHz+3;
                 vehicle->section[j].sectionOnOffCycle = true;
             }
@@ -492,10 +493,10 @@ void FormGPS::processSectionOnOffRequests()
                 if (!vehicle->section[j].isSectionOn) vehicle->section[j].turnSectionOn();
 
                 //keep resetting the section OFF timer while the ON is active
-                vehicle->section[j].sectionOffTimer = (int)(fixUpdateHz * vehicle->toolTurnOffDelay);
+                vehicle->section[j].sectionOffTimer = int(fixUpdateHz * vehicle->toolTurnOffDelay);
             }
 
-            if (!vehicle->section[j].sectionOffRequest) vehicle->section[j].sectionOffTimer = (int)(fixUpdateHz * vehicle->toolTurnOffDelay);
+            if (!vehicle->section[j].sectionOffRequest) vehicle->section[j].sectionOffTimer = int(fixUpdateHz * vehicle->toolTurnOffDelay);
 
             //decrement the off timer
             if (vehicle->section[j].sectionOffTimer > 0) vehicle->section[j].sectionOffTimer--;
@@ -616,7 +617,7 @@ void FormGPS::tmrWatchdog_timeout()
 
         qmlItem(qml_root,"stripHz")->setProperty("text",locale.toString(fixUpdateHz) + " " + tr("Hz"));
         tlDisp->lblHeading->setText("<small>Hdg:</small>"+locale.toString(glm::toDegrees(vehicle->fixHeading),'f',1) + QChar(0x00b0));
-        tlDisp->lblSteerAngle->setText("<small>Steer:</small>" + locale.toString((double)(vehicle->guidanceLineSteerAngle) / 10,'f',1) + QChar(0x00b0));
+        tlDisp->lblSteerAngle->setText("<small>Steer:</small>" + locale.toString(double(vehicle->guidanceLineSteerAngle) / 10,'f',1) + QChar(0x00b0));
 
         /*
          * TODO
@@ -674,13 +675,13 @@ void FormGPS::tmrWatchdog_timeout()
                 if (ct->distanceFromCurrentLine == 32000) ct->distanceFromCurrentLine = 0;
 
                 if ((ct->distanceFromCurrentLine) < 0.0) {
-                    if (isMetric) dist = locale.toString((int)fabs(ct->distanceFromCurrentLine * 0.1)) + " " + QChar(0x2192);
-                    else dist = locale.toString((int)fabs(ct->distanceFromCurrentLine / 2.54 * 0.1)) + " " + QChar(0x2192);
+                    if (isMetric) dist = locale.toString(int(fabs(ct->distanceFromCurrentLine * 0.1))) + " " + QChar(0x2192);
+                    else dist = locale.toString(int(fabs(ct->distanceFromCurrentLine / 2.54 * 0.1))) + " " + QChar(0x2192);
                     tlDisp->txtDistanceOffABLine->setStyleSheet("QLabel { color: green; }");
                     tlDisp->txtDistanceOffABLine->setText(dist);
                 } else {
-                    if (isMetric) dist = QString("") + QChar(0x2190) + " " + locale.toString((int)fabs(ct->distanceFromCurrentLine * 0.1));
-                    else dist = QString("") + QChar(0x2190)+ " " + locale.toString((int)fabs(ct->distanceFromCurrentLine / 2.54 * 0.1));
+                    if (isMetric) dist = QString("") + QChar(0x2190) + " " + locale.toString(int(fabs(ct->distanceFromCurrentLine * 0.1)));
+                    else dist = QString("") + QChar(0x2190)+ " " + locale.toString(int(fabs(ct->distanceFromCurrentLine / 2.54 * 0.1)));
                     tlDisp->txtDistanceOffABLine->setStyleSheet("QLabel { color: red; }");
                     tlDisp->txtDistanceOffABLine->setText(dist);
                 }
@@ -698,14 +699,14 @@ void FormGPS::tmrWatchdog_timeout()
                 btnAutoSteer->setProperty("enabled",true);
                 if ((ABLine->distanceFromCurrentLine) < 0.0) {
                     // --->
-                    if (isMetric) dist = locale.toString((int)fabs(ABLine->distanceFromCurrentLine * 0.1)) + QChar(0x21D2);
-                    else dist = locale.toString((int)fabs(ABLine->distanceFromCurrentLine / 2.54 * 0.1)) + QChar(0x21D2);
+                    if (isMetric) dist = locale.toString(int(fabs(ABLine->distanceFromCurrentLine * 0.1))) + QChar(0x21D2);
+                    else dist = locale.toString(int(fabs(ABLine->distanceFromCurrentLine / 2.54 * 0.1))) + QChar(0x21D2);
                     tlDisp->txtDistanceOffABLine->setStyleSheet("QLabel { color: green; }");
                     tlDisp->txtDistanceOffABLine->setText(dist);
                 } else {
                     // <----
-                    if (isMetric) dist = QChar(0x21D0) + locale.toString((int)fabs(ABLine->distanceFromCurrentLine * 0.1));
-                    else dist = QChar(0x21D0) + locale.toString((int)fabs(ABLine->distanceFromCurrentLine / 2.54 * 0.1));
+                    if (isMetric) dist = QChar(0x21D0) + locale.toString(int(fabs(ABLine->distanceFromCurrentLine * 0.1)));
+                    else dist = QChar(0x21D0) + locale.toString(int(fabs(ABLine->distanceFromCurrentLine / 2.54 * 0.1)));
                     tlDisp->txtDistanceOffABLine->setStyleSheet("QLabel { color: red; }");
                     tlDisp->txtDistanceOffABLine->setText(dist);
                 }
@@ -823,4 +824,28 @@ QString FormGPS::speedMPH() {
     spd *= 0.0621371;
 
     return locale.toString(spd,'f',1);
+}
+
+void FormGPS::on_actionSave_Vehicle_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, "Save Vehicle", "./", "ini (*.ini)");
+
+    // Check for a valid file, this handles canceling the save
+    if (fileName.isEmpty())
+        return;
+    else {
+        vehicle->SaveVehicleFile(fileName);
+    }
+}
+
+void FormGPS::on_actionLoad_Vehicle_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, "Load Vehicle", "./", "ini (*.ini)");
+
+    // Check for a valid file, this handles canceling the save
+    if (fileName.isEmpty())
+        return;
+    else {
+        vehicle->LoadVehicleFile(fileName);
+    }
 }

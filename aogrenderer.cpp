@@ -83,7 +83,7 @@ void AOGRenderer::render()
 }
 
 AOGRenderer::AOGRenderer():
-    isInitialized(false),win(0),calledInit(false), samples(0)
+    isInitialized(false),win(nullptr),calledInit(false), samples(0)
 {
     qDebug() << "AOGRenderer constructor here.";
 }
@@ -111,7 +111,7 @@ void AOGRenderer::synchronize(QQuickFramebufferObject *fbo)
 
 AOGRendererInSG::AOGRendererInSG()
 {
-    theRenderer = NULL;
+    theRenderer = nullptr;
 }
 
 QOpenGLFramebufferObject *AOGRenderer::createFramebufferObject(const QSize &size)

@@ -33,8 +33,8 @@ void FormGPS::openGLControl_Draw()
     QMatrix4x4 projection;
     QMatrix4x4 modelview;
 
-    int width = qmlItem(qml_root, "openglcontrol")->property("width").toReal();
-    int height = qmlItem(qml_root, "openglcontrol")->property("height").toReal();
+    int width = int(qmlItem(qml_root, "openglcontrol")->property("width").toReal());
+    int height = int(qmlItem(qml_root, "openglcontrol")->property("height").toReal());
     gl->glViewport(0,0,width,height);
     //qDebug() << width << height;
 
@@ -68,7 +68,7 @@ void FormGPS::openGLControl_Draw()
     projection.setToIdentity();
 
     //  Create a perspective transformation.
-    projection.perspective(fovy, width / (double)height, 1, camDistanceFactor * camera.camSetDistance);
+    projection.perspective(fovy, width / double(height), 1, camDistanceFactor * camera.camSetDistance);
 
 
     //double aspect = width / (float)height;
@@ -124,9 +124,9 @@ void FormGPS::openGLControl_Draw()
                 //initialize the steps for mipmap of triangles (skipping detail while zooming out)
                 int mipmap = 0;
                 if (camera.camSetDistance < -800) mipmap = 2;
-                if (camera.camSetDistance < -1500) mipmap = 4;
-                if (camera.camSetDistance < -2400) mipmap = 8;
-                if (camera.camSetDistance < -4800) mipmap = 16;
+                else if (camera.camSetDistance < -1500) mipmap = 4;
+                else if (camera.camSetDistance < -2400) mipmap = 8;
+                else if (camera.camSetDistance < -4800) mipmap = 16;
 
                 //for every new chunk of patch
 
@@ -306,7 +306,7 @@ void FormGPS::openGLControl_Draw()
         //// 2D Ortho --------------------------
         projection.setToIdentity();
         //negative and positive on width, 0 at top to bottom ortho view
-        projection.ortho(-(double)width / 2, width / 2, (double)height, 0, -1, 1);
+        projection.ortho(-float(width) / 2, width / 2, float(height), 0, -1, 1);
 
         //  Create the appropriate modelview matrix.
         modelview.setToIdentity();
@@ -325,15 +325,15 @@ void FormGPS::openGLControl_Draw()
                     //hite = 0.001;
 
                     //the background
-                    double winLeftPos = -(double)width / 2;
+                    double winLeftPos = -double(width) / 2;
                     double winRightPos = -winLeftPos;
 
                     //map texture coordinates to model coordinates
                     VertexTexcoord vertices[] = {
-                        { QVector3D(winRightPos, 0.0, 0), QVector2D(0,0)}, //top right
-                        { QVector3D(winLeftPos, 0.0, 0), QVector2D(1,0)}, //top left
-                        { QVector3D(winRightPos, hite*(double)height,0), QVector2D(0,1) }, //bottom right
-                        { QVector3D(winLeftPos, hite*(double)height,0), QVector2D(1,1) }, //bottom left
+                        { QVector3D(float(winRightPos), 0.0, 0), QVector2D(0,0)}, //top right
+                        { QVector3D(float(winLeftPos), 0.0, 0), QVector2D(1,0)}, //top left
+                        { QVector3D(float(winRightPos), float(hite*height),0), QVector2D(0,1) }, //bottom right
+                        { QVector3D(float(winLeftPos), float(hite*height),0), QVector2D(1,1) }, //bottom left
                     };
                     //rebuild sky buffer
                     if (skyBuffer.isCreated())
@@ -361,11 +361,9 @@ void FormGPS::openGLControl_Draw()
             {
                 if (ct->distanceFromCurrentLine == 32000) ct->distanceFromCurrentLine = 0;
 
-                drawLightBar(width, height, ct->distanceFromCurrentLine * 0.1, modelview, projection);
+                drawLightBar(ct->distanceFromCurrentLine * 0.1, modelview, projection);
             } else if (ABLine->isABLineSet || ABLine->isABLineBeingSet) {
-                drawLightBar(width, height,
-                             ABLine->distanceFromCurrentLine * 0.1,
-                             modelview, projection);
+                drawLightBar(ABLine->distanceFromCurrentLine * 0.1, modelview, projection);
             }
 
         }
@@ -548,11 +546,11 @@ void FormGPS::openGLControlBack_Draw()
 
     //rotate camera so heading matched fix heading in the world
     //gl->glRotated(toDegrees(fixHeadingSection), 0, 0, 1);
-    modelview.rotate(glm::toDegrees(vehicle->fixHeadingSection), 0, 0, 1);
+    modelview.rotate(float(glm::toDegrees(vehicle->fixHeadingSection)), 0, 0, 1);
 
     //translate to that spot in the world
     //gl->glTranslated(-toolPos.easting, -toolPos.northing, -fixZ);
-    modelview.translate(-vehicle->toolPos.easting, -vehicle->toolPos.northing, -vehicle->fixZ);
+    modelview.translate(float(-vehicle->toolPos.easting), float(-vehicle->toolPos.northing), float(-vehicle->fixZ));
 
     //patch color
     //QColor patchColor(0.0f, 0.5f, 0.0f);
@@ -670,13 +668,12 @@ void FormGPS::openGLControlBack_Initialized()
 {
 }
 
-void FormGPS::drawLightBar(double Width, double Height, double offlineDistance,
-                           const QMatrix4x4 &modelview, const QMatrix4x4 &projection)
+void FormGPS::drawLightBar(double offlineDistance, const QMatrix4x4 &modelview, const QMatrix4x4 &projection)
 {
     QOpenGLContext *glContext = QOpenGLContext::currentContext();
     QOpenGLFunctions *gl = glContext->functions();
     //QOpenGLFunctions_2_1 *gl = glContext->versionFunctions<QOpenGLFunctions_2_1>();
-    double down = 20;
+    float down = 20;
 
     QOpenGLBuffer dotbuffer;
     QVector<ColorVertex> dots;
@@ -685,7 +682,7 @@ void FormGPS::drawLightBar(double Width, double Height, double offlineDistance,
     //use index buffers to choose which lights we want to draw.
 
     //  Dot distance is representation of how far from AB Line
-    int dotDistance = (int)(offlineDistance);
+    int dotDistance = int(offlineDistance);
 
     if (dotDistance < -320) dotDistance = -320;
     if (dotDistance > 320) dotDistance = 320;

@@ -194,7 +194,7 @@ void CBoundary::drawBoundaryLineOnBackBuffer(QOpenGLFunctions *gl,
 	    //the first point at the end.
         }
 
-        QColor color = QColor::fromRgbF(0.0f, 0.99f, 0.0f);
+        QColor color = QColor::fromRgbF(0.0, 0.99, 0.0);
 
         ////draw the perimeter line so far
         glDrawArraysColor(gl, mvp,

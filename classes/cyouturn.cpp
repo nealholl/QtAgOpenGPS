@@ -68,8 +68,8 @@ bool CYouTurn::loadYouTurnShapeFromFile(QString filename)
 
                 QStringList words = line.split(',');
 
-                coords.setX(words[0].toDouble());
-                coords.setY(words[1].toDouble());
+                coords.setX(words[0].toFloat());
+                coords.setY(words[1].toFloat());
                 youFileList.append(coords);
             }
         }

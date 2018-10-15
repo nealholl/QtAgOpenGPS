@@ -53,7 +53,7 @@ class FormGPS : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit FormGPS(QWidget *parent = 0);
+    explicit FormGPS(QWidget *parent = nullptr);
     ~FormGPS();
 
      /***********************************************
@@ -117,7 +117,7 @@ public:
     QSurfaceFormat backSurfaceFormat;
     QOpenGLContext backOpenGLContext;
     QOffscreenSurface backSurface;
-    QOpenGLFramebufferObject *backFBO = 0;
+    QOpenGLFramebufferObject *backFBO = nullptr;
 
     /*******************
      * from FormGPS.cs *
@@ -196,29 +196,29 @@ public:
 
     //Parsing object of NMEA sentences
     //QScopedPointer<CNMEA> pn;
-    CNMEA *pn =NULL;
+    CNMEA *pn = nullptr;
 
     //create an array of sections, so far only 8 section + 1 fullWidth Section
     //QScopedArrayPointer<CSection> section;
-    //CSection *section =NULL;
+    //CSection *section = nullptr;
 
     //ABLine Instance
     //QScopedPointer<CABLine> ABLine;
-    CABLine *ABLine =NULL;
+    CABLine *ABLine = nullptr;
 
     //Contour mode Instance
     //QScopedPointer<CContour> ct;
-    CContour *ct =NULL;
+    CContour *ct = nullptr;
 
     //Auto headland instance
-    CYouTurn *yt = NULL;
+    CYouTurn *yt = nullptr;
 
     //Rate control object
-    CRate *rc = NULL;
+    CRate *rc = nullptr;
 
     //a brand new vehicle
     //QScopedPointer<CVehicle> vehicle;
-    CVehicle *vehicle =NULL;
+    CVehicle *vehicle = nullptr;
 
     //module communication object
     CModuleComm mc;
@@ -349,7 +349,7 @@ public:
     //extracted Near, Far, Right, Left clipping planes of frustum
     double frustum[24];
 
-    double fovy = 45;
+    float fovy = 45;
     double camDistanceFactor = -2;
     int mouseX = 0, mouseY = 0;
     int lastWidth=-1, lastHeight=-1;
@@ -372,7 +372,7 @@ public:
      * UDPComm.designer.cs *
      ***********************/
 private:
-    QUdpSocket *udpSocket = NULL;
+    QUdpSocket *udpSocket = nullptr;
 
 public:
     bool isUDPServerOn = false;
@@ -407,7 +407,7 @@ public:
                              QOpenGLBuffer &vertexBuffer, GLenum glType,
                              int count);
     */
-    void drawLightBar(double Width, double Height, double offlineDistance, const QMatrix4x4 &modelview, const QMatrix4x4 &projection);
+    void drawLightBar(double offlineDistance, const QMatrix4x4 &modelview, const QMatrix4x4 &projection);
     //void calcFrustum(QOpenGLFunctions_2_1 *gl);
     //transitioning to OPenGL ES; use our own computed matrices
     void calcFrustum(const QMatrix4x4 &mvp);
@@ -523,6 +523,9 @@ public slots:
     void processSectionLookahead(); //called when section lookahead GL stuff is rendered
 
 
+private slots:
+    void on_actionSave_Vehicle_triggered();
+    void on_actionLoad_Vehicle_triggered();
 };
 
 #endif // FORMGPS_H

@@ -4,9 +4,9 @@
 #include <assert.h>
 
 //module-level symbols
-QOpenGLShaderProgram *simpleColorShader = 0;
-QOpenGLShaderProgram *texShader = 0;
-QOpenGLShaderProgram *interpColorShader = 0;
+QOpenGLShaderProgram *simpleColorShader = nullptr;
+QOpenGLShaderProgram *texShader = nullptr;
+QOpenGLShaderProgram *interpColorShader = nullptr;
 
 void initializeShaders() {
     //GL context must be bound by caller, and this must be called from
@@ -38,17 +38,17 @@ void destroyShaders() {
 
     if(simpleColorShader) {
         delete simpleColorShader;
-        simpleColorShader = 0;
+        simpleColorShader = nullptr;
     }
 
     if(texShader) {
         delete texShader;
-        texShader = 0;
+        texShader = nullptr;
     }
 
     if(interpColorShader) {
         delete interpColorShader;
-        interpColorShader = 0;
+        interpColorShader = nullptr;
     }
 }
 
@@ -82,7 +82,7 @@ void glDrawArraysColor(QOpenGLFunctions *gl,
                               GL_type, //type of data GL_FLAOT or GL_DOUBLE
                               GL_FALSE, //not normalized vertices!
                               0, //no spaceing between vertices in data
-                              0 //start at offset 0 in buffer
+                              nullptr //start at offset 0 in buffer
                              );
 
     //draw primitive
@@ -123,7 +123,7 @@ void glDrawArraysColors(QOpenGLFunctions *gl,
                               GL_type, //type of data GL_FLAOT or GL_DOUBLE
                               GL_FALSE, //not normalized vertices!
                               7*sizeof(float), //vertex+color
-                              0 //start at offset 0 in buffer
+                              nullptr //start at offset 0 in buffer
                              );
 
     gl->glVertexAttribPointer(interpColorShader->attributeLocation("color"),

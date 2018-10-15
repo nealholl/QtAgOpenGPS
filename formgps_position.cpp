@@ -62,7 +62,7 @@ void FormGPS::scanForNMEA()
             if (et > 9 && et < 13) fixUpdateHz = 10;
             if (et > 1.2 && et < 3) fixUpdateHz = 2;
             if (et > 0.8 && et < 1.2) fixUpdateHz = 1;
-            fixUpdateTime = 1 / (double)fixUpdateHz;
+            fixUpdateTime = 1 / double(fixUpdateHz);
             timerPn = 0;
             hzTime = 0;
             //fixUpdateHz = 5;
@@ -220,14 +220,14 @@ void FormGPS::updateFixPosition()
     if (!isInFreeDriveMode)
     {
 
-        //fill up0 the auto steer array with new values
-        mc.autoSteerData[mc.sdSpeed] = (uchar)(pn->speed * 4.0);
+        //fill up the auto steer array with new values
+        mc.autoSteerData[mc.sdSpeed] = uchar(pn->speed * 4.0);
 
-        mc.autoSteerData[mc.sdDistanceHi] = (uchar)(vehicle->guidanceLineDistanceOff >> 8);
-        mc.autoSteerData[mc.sdDistanceLo] = (uchar)vehicle->guidanceLineDistanceOff;
+        mc.autoSteerData[mc.sdDistanceHi] = uchar(vehicle->guidanceLineDistanceOff >> 8);
+        mc.autoSteerData[mc.sdDistanceLo] = uchar(vehicle->guidanceLineDistanceOff);
 
-        mc.autoSteerData[mc.sdSteerAngleHi] = (uchar)(vehicle->guidanceLineSteerAngle >> 8);
-        mc.autoSteerData[mc.sdSteerAngleLo] = (uchar)vehicle->guidanceLineSteerAngle;
+        mc.autoSteerData[mc.sdSteerAngleHi] = uchar(vehicle->guidanceLineSteerAngle >> 8);
+        mc.autoSteerData[mc.sdSteerAngleLo] = uchar(vehicle->guidanceLineSteerAngle);
 
         //out serial to autosteer module  //indivdual classes load the distance and heading deltas
         autoSteerDataOutToPort();
@@ -236,11 +236,11 @@ void FormGPS::updateFixPosition()
     else
     {
         //fill up the auto steer array with free drive values
-        mc.autoSteerData[mc.sdSpeed] = (uchar)(pn->speed * 4.0 + 8);
+        mc.autoSteerData[mc.sdSpeed] = uchar(pn->speed * 4.0 + 8);
 
         //make steer module think everything is normal
-        mc.autoSteerData[mc.sdDistanceHi] = (uchar)(0);
-        mc.autoSteerData[mc.sdDistanceLo] = (uchar)0;
+        mc.autoSteerData[mc.sdDistanceHi] = uchar(0);
+        mc.autoSteerData[mc.sdDistanceLo] = uchar(0);
 
         //mc.autoSteerData[mc.sdSteerAngleHi] = (uchar)(guidanceLineSteerAngle >> 8);
         //mc.autoSteerData[mc.sdSteerAngleLo] = (uchar)guidanceLineSteerAngle;
@@ -660,8 +660,8 @@ void FormGPS::initializeFirstFewGPSPositions()
     if (!isFirstFixPositionSet)
     {
         //reduce the huge utm coordinates
-        pn->utmEast = (int)(pn->easting);
-        pn->utmNorth = (int)(pn->northing);
+        pn->utmEast = int(pn->easting);
+        pn->utmNorth = int(pn->northing);
         //qDebug() << pn->utmEast <<" from " << pn->easting;
         pn->easting = pn->easting - pn->utmEast;
         pn->northing = pn->northing - pn->utmNorth;

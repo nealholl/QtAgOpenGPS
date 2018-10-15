@@ -31,6 +31,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 INCLUDEPATH += $$PWD/classes
 
+QML_IMPORT_PATH += /f/qt5
+
 SOURCES += main.cpp\
         formgps.cpp \
     classes/cabline.cpp \

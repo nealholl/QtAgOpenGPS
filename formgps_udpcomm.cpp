@@ -27,7 +27,7 @@ void FormGPS::udpServerReadDatagrams()
 void FormGPS::startUDPServer()
 {
     AOGSettings s;
-    int port = s.value("port/udp_port_num",9999).toInt();
+    uint port = s.value("port/udp_port_num",UDP_NMEA_PORT).toUInt();
 
     if(udpSocket) stopUDPServer();
 
@@ -42,7 +42,7 @@ void FormGPS::stopUDPServer()
     if(udpSocket) {
         udpSocket->close();
         delete udpSocket;
-        udpSocket = NULL;
+        udpSocket = nullptr;
     }
 }
 
