@@ -5,6 +5,7 @@
 #include "vec2.h"
 #include "common.h"
 #include <QMatrix4x4>
+#include <QFile>
 
 #include <QOpenGLBuffer>
 
@@ -114,6 +115,8 @@ public:
     QVector<QSharedPointer<QVector<QVector3D>>> patchSaveList;
 
     CVehicle();
+    void SaveVehicleFile(QString file);
+    void LoadVehicleFile(QString file);
     void drawVehicle(QOpenGLContext *c, QMatrix4x4 &modelview, const QMatrix4x4 &projection, bool drawSectionMarkers = true);
     void destroyGLBuffers();
 
